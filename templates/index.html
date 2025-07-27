@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--
+    Document Type Declaration (DOCTYPE)
+    
+    The <!DOCTYPE html> declaration defines the document type and version of HTML.
+    It ensures that the browser interprets the document as an HTML5 document.
+    This declaration is mandatory and should be the very first line in your HTML document.
+-->
+
+<html lang="en">
+<!--
+    <html> Tag
+    
+    The <html> element is the root element of an HTML page. It encapsulates all other elements
+    within the document. The lang="en" attribute specifies that the language of the document is English,
+    which aids in accessibility and SEO (Search Engine Optimization).
+-->
+<head>
+    <!--
+        <head> Section
+        
+        The <head> element contains meta-information about the HTML document, such as its title,
+        character set, linked resources like CSS and JavaScript files, and other metadata.
+        This information is not displayed directly on the web page.
+    -->
+    
+    <meta charset="UTF-8">
+    <!--
+        <meta> Tag: Character Set
+        
+        The <meta charset="UTF-8"> tag specifies the character encoding for the HTML document.
+        UTF-8 is a widely used encoding that supports virtually all characters from all languages,
+        ensuring that text is rendered correctly.
+    -->
+    
+    <title>Hello World & Calculator Demo</title>
+    <!--
+        <title> Tag
+        
+        The <title> element defines the title of the HTML document, which appears in the browser's
+        title bar or tab. It is also used by search engines to understand the content of the page.
+    -->
+    
+    <style>
+        /*
+            <style> Section: CSS Styles
+            
+            The <style> element allows you to embed CSS (Cascading Style Sheets) directly within
+            the HTML document. CSS is used to style and layout web pages, controlling aspects
+            like colors, fonts, spacing, and positioning.
+        */
+        
+        body {
+            /* 
+                Styles for the <body> Element
+                
+                - font-family: Sets the font for the entire page to Arial, sans-serif.
+                - text-align: Centers the text horizontally.
+                - margin-top: Adds a 50-pixel margin at the top of the page for spacing.
+            */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .calculator {
+            /* 
+                Styles for Elements with the "calculator" Class
+                
+                - margin-top: Adds a 30-pixel margin above the calculator section to separate it
+                  from other content.
+            */
+            margin-top: 30px;
+        }
+        
+        input {
+            /* 
+                Styles for <input> Elements
+                
+                - margin: Adds a 5-pixel margin around input fields for spacing.
+                - padding: Adds a 5-pixel padding inside input fields for better readability.
+            */
+            margin: 5px;
+            padding: 5px;
+        }
+        
+        button {
+            /* 
+                Styles for <button> Elements
+                
+                - padding: Adds 5 pixels of vertical padding and 10 pixels of horizontal padding
+                  inside buttons to make them larger and more clickable.
+            */
+            padding: 5px 10px;
+        }
+        
+        .result {
+            /* 
+                Styles for Elements with the "result" Class
+                
+                - margin-top: Adds a 10-pixel margin above the result display area.
+                - font-weight: Makes the text bold to emphasize the result.
+            */
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!--
+        <body> Section
+        
+        The <body> element contains all the contents of an HTML document, such as text, images,
+        links, buttons, and other media. Everything within the <body> tag is rendered on the
+        web page and visible to users.
+    -->
+    
+    <h1>Hello World</h1>
+    <!--
+        <h1> Tag: Heading
+        
+        The <h1> element represents the most important heading on the page. It is typically used
+        for the main title or headline. Search engines give significant weight to <h1> tags for SEO.
+    -->
+    
+    <div class="calculator">
+        <!--
+            <div> Element with "calculator" Class
+            
+            The <div> element is a generic container used to group other elements. The class="calculator"
+            attribute assigns the "calculator" class to this <div>, allowing it to be styled using CSS.
+            This section contains the calculator interface, including input fields and buttons.
+        -->
+        
+        <h2>Calculator</h2>
+        <!--
+            <h2> Tag: Subheading
+            
+            The <h2> element represents a secondary heading, subordinate to <h1>. It introduces the
+            calculator section of the page.
+        -->
+        
+        <input type="number" id="a" placeholder="First number">
+        <!--
+            <input> Element: First Number Input
+            
+            - type="number": Specifies that the input should accept numeric values.
+            - id="a": Assigns a unique identifier "a" to this input, allowing it to be accessed via JavaScript.
+            - placeholder="First number": Displays the text "First number" inside the input field as a hint to the user.
+        -->
+        
+        <input type="number" id="b" placeholder="Second number"><br>
+        <!--
+            <input> Element: Second Number Input
+            
+            - type="number": Specifies that the input should accept numeric values.
+            - id="b": Assigns a unique identifier "b" to this input, allowing it to be accessed via JavaScript.
+            - placeholder="Second number": Displays the text "Second number" inside the input field as a hint to the user.
+            
+            <br> Tag: Line Break
+            
+            Inserts a line break after the second input field, moving subsequent elements to the next line.
+        -->
+        
+        <button onclick="calculate('add')">Add</button>
+        <!--
+            <button> Element: Add Button
+            
+            - onclick="calculate('add')": Sets up an event handler that calls the JavaScript function "calculate"
+              with the argument 'add' when the button is clicked.
+            - "Add": The text displayed on the button.
+        -->
+        
+        <button onclick="calculate('subtract')">Subtract</button>
+        <!--
+            <button> Element: Subtract Button
+            
+            - onclick="calculate('subtract')": Sets up an event handler that calls the JavaScript function "calculate"
+              with the argument 'subtract' when the button is clicked.
+            - "Subtract": The text displayed on the button.
+        -->
+        
+        <button onclick="calculate('multiply')">Multiply</button>
+        <!--
+            <button> Element: Multiply Button
+            
+            - onclick="calculate('multiply')": Sets up an event handler that calls the JavaScript function "calculate"
+              with the argument 'multiply' when the button is clicked.
+            - "Multiply": The text displayed on the button.
+        -->
+        
+        <button onclick="calculate('divide')">Divide</button>
+        <!--
+            <button> Element: Divide Button
+            
+            - onclick="calculate('divide')": Sets up an event handler that calls the JavaScript function "calculate"
+              with the argument 'divide' when the button is clicked.
+            - "Divide": The text displayed on the button.
+        -->
+        
+        <div class="result" id="result"></div>
+        <!--
+            <div> Element: Result Display
+            
+            - class="result": Assigns the "result" class to this <div>, allowing it to be styled using CSS.
+            - id="result": Assigns a unique identifier "result" to this <div>, enabling it to be accessed and manipulated via JavaScript.
+            
+            This <div> is used to display the result of the arithmetic operation or any error messages.
+        -->
+    </div>
+    
+    <script>
+        /*
+            <script> Section: JavaScript
+            
+            The <script> element allows you to embed JavaScript code directly within the HTML document.
+            JavaScript is a programming language that enables interactive and dynamic content on web pages.
+            In this example, JavaScript is used to handle calculator operations by sending requests to the server
+            and updating the page based on the server's response.
+        */
+        
+        async function calculate(operation) {
+            /*
+                Function: calculate
+                
+                The 'calculate' function performs an arithmetic operation by sending a POST request
+                to the corresponding API endpoint. It retrieves the input values, sends them to the server,
+                and updates the result display based on the server's response.
+                
+                Parameters:
+                - operation (string): The arithmetic operation to perform ('add', 'subtract', 'multiply', 'divide').
+                
+                Steps:
+                1. Retrieve the values from the input fields with IDs 'a' and 'b'.
+                2. Parse the retrieved values to floating-point numbers.
+                3. Send a POST request to the server at the endpoint corresponding to the operation.
+                4. Await the server's response and parse it as JSON.
+                5. Log the response status and data to the console for debugging purposes.
+                6. If the response is successful (status code 200), display the result.
+                7. If the response indicates an error, display the error message.
+                8. Handle any network or unexpected errors by displaying an error message.
+            */
+            
+            // Retrieve the value of the first input field (ID: 'a') and parse it as a float
+            const a = parseFloat(document.getElementById('a').value);
+            
+            // Retrieve the value of the second input field (ID: 'b') and parse it as a float
+            const b = parseFloat(document.getElementById('b').value);
+            
+            // Get the <div> element where the result or error message will be displayed
+            const resultElement = document.getElementById('result');
+    
+            try {
+                /*
+                    Sending the POST Request
+                    
+                    - fetch('/' + operation, {...}): Sends a POST request to the server at the path corresponding
+                      to the operation (e.g., '/add', '/subtract').
+                      
+                    - method: 'POST': Specifies the HTTP method as POST, indicating that data is being sent to the server.
+                    
+                    - headers: { 'Content-Type': 'application/json' }: Sets the 'Content-Type' header to 'application/json',
+                      informing the server that the request body contains JSON data.
+                      
+                    - body: JSON.stringify({ a: a, b: b }): Converts the JavaScript object { a: a, b: b } into a JSON string
+                      to be sent in the request body.
+                */
+                const response = await fetch('/' + operation, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ a: a, b: b })
+                });
+                
+                // Await and parse the response as JSON
+                const data = await response.json();
+                
+                // Log the response status and data to the browser's console for debugging
+                console.log('Response Status:', response.status);
+                console.log('Response Data:', data);
+                
+                if (response.ok) {
+                    /*
+                        Successful Response Handling
+                    
+                        - response.ok: A boolean indicating whether the HTTP status code is in the range 200-299,
+                          which means the request was successful.
+                          
+                        - resultElement.innerText: Updates the text inside the result <div> to display the result.
+                    */
+                    resultElement.innerText = 'Result: ' + data.result;
+                } else {
+                    /*
+                        Error Response Handling
+                    
+                        - If the response is not successful, it is expected to contain an 'error' field with
+                          a descriptive message.
+                          
+                        - resultElement.innerText: Updates the text inside the result <div> to display the error message.
+                    */
+                    resultElement.innerText = 'Error: ' + data.error;
+                }
+            } catch (error) {
+                /*
+                    Catch Block: Handling Network or Unexpected Errors
+                
+                    - Any errors that occur during the fetch operation (e.g., network issues) are caught here.
+                    
+                    - console.error: Logs the error to the browser's console for debugging.
+                    
+                    - resultElement.innerText: Updates the text inside the result <div> to display the error message.
+                */
+                console.error('Fetch error:', error);
+                resultElement.innerText = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
