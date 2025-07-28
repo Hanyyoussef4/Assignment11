@@ -1,21 +1,24 @@
-# Assignment 10 – Secure FastAPI with CI/CD & Docker
+# Assignment 11 – Calculation Model, Alembic Migrations & Extended CI/CD
 
-![CI/CD Status](https://github.com/Hanyyoussef4/Assignment10/actions/workflows/test.yml/badge.svg)
+![CI/CD Status](https://github.com/Hanyyoussef4/Assignment11/actions/workflows/ci.yml/badge.svg)
 
-A FastAPI application with:
+> **What’s new in Module 11?**
+>
+> * Added **Calculation** SQLAlchemy model (Add, Subtract, Multiply, Divide)
+> * Alembic migrations folder & auto‑generated migration for `calculations` table
+> * Pydantic schemas **CalculationCreate / CalculationRead** with robust validation
+> * Extra unit tests + CI workflow now installs Alembic, runs migrations, and skips UI tests
+> * Image pushed to **`hany25/assignment11`** on Docker Hub
 
-1. Secure User model (bcrypt password hashing, JWT auth)
-2. PostgreSQL backend via SQLAlchemy
-3. Full test coverage (unit, integration, e2e)
-4. GitHub Actions CI pipeline (tests → security scan → Docker build & push)
-5. Docker image published to Docker Hub
+The earlier functionality from Assignment 10 (secure users, JWT auth, full testing,
+Dockerised FastAPI) remains intact.
 
 ---
 
 ## 🔗 Quick Links
 
-* **GitHub Repo**: [https://github.com/Hanyyoussef4/Assignment10](https://github.com/Hanyyoussef4/Assignment10)
-* **Docker Hub**: [https://hub.docker.com/r/hany25/assignment10](https://hub.docker.com/r/hany25/assignment10)
+* **GitHub Repo**: [https://github.com/Hanyyoussef4/Assignment11](https://github.com/Hanyyoussef4/Assignment11)
+* **Docker Hub**: [https://hub.docker.com/r/hany25/assignment11](https://hub.docker.com/r/hany25/assignment11)
 * **Reflection**: [Documentation/Reflection.md](Documentation/Reflection.md)
 
 ---
@@ -23,8 +26,8 @@ A FastAPI application with:
 ## 🐳 Docker Image
 
 ```bash
-docker pull hany25/assignment10:latest
-docker run -p 8000:8000 hany25/assignment10:latest
+docker pull hany25/assignment11:latest
+docker run -p 8000:8000 hany25/assignment11:latest
 ```
 
 ---
@@ -34,40 +37,60 @@ docker run -p 8000:8000 hany25/assignment10:latest
 ```
 .
 ├── app/
-│   ├── auth/                   # Authentication dependencies & JWT
-│   ├── models/                 # SQLAlchemy ORM models
-│   ├── operations/             # Business logic functions
-│   ├── schemas/                # Pydantic request/response models
-│   ├── database.py             # Engine & session setup
-│   └── config.py               # SECRET_KEY, token expiry, etc.
-├── tests/                      # Unit, integration & e2e tests
-├── Documentation/              # Screenshots & reflection (rename doc to Documentation)
+│   ├── auth/                       # JWT & auth deps
+│   ├── models/
+│   │   ├── user.py
+│   │   └── calculation.py          # ← NEW
+│   ├── operations/
+│   ├── schemas/
+│   │   ├── user.py
+│   │   └── calculation.py          # ← NEW
+│   ├── database.py
+│   └── config.py
+├── migrations/                     # ← NEW (Alembic)
+│   ├── env.py
+│   └── versions/
+│       └── *_add_calculations_table.py
+├── tests/
+│   ├── unit/
+│   │   └── test_calculation_schema.py   # ← NEW
+│   ├── integration/
+│   └── e2e/
+├── Documentation/
 │   ├── Docker Hub Deployment.png
 │   ├── GitHub Actions Workflow.png
-│   └── reflection.md
-├── requirements.txt            # Python dependencies
-├── Dockerfile                  # Container instructions
-├── docker-compose.yml          # Dev environment
-├── main.py                     # FastAPI entrypoint
+│   └── Reflection.md
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
 ├── .github/
 │   └── workflows/
-│       └── test.yml            # CI/CD pipeline
-└── README.md                   # (this file)
+│       └── ci.yml                  # updated: alembic + skip e2e
+└── README.md
 ```
 
 ---
 
 ## 🚦 CI/CD Pipeline
 
-1. **test** – runs unit, integration & e2e tests
+1. **test** – installs deps, runs Alembic `upgrade head`, then `pytest -k "not e2e"`
 2. **security** – builds a local image and scans with Trivy
-3. **deploy** – builds and pushes `hany25/assignment10` (latest & SHA tags)
+3. **deploy** – pushes `hany25/assignment11` (`latest` & `${{ sha }}`) to Docker Hub
 
 <details>
-<summary>View workflow screenshot</summary>
+<summary>Workflow screenshot</summary>
 
-!\[GitHub Actions Workflow]\(Documentation/GitHub\ Actions\ Workflow\.png)
+![GitHub Actions Workflow](Documentation/GitHub%20Actions%20Workflow.png)
 
 </details>
 
 ---
+
+## ✨ Features
+
+* **Calculation Endpoints** (to be exposed in Module 12) already have
+  database & schema support, easing future API work.
+* Validators prevent *divide‑by‑zero* and enforce allowed operation types.
+* Fully automated pipeline keeps the test database schema in sync via Alembic.
+
+*The rest of this README (setup, environment variables, etc.) is unchanged from Assignment 10.*
