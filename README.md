@@ -71,7 +71,3 @@ docker run -p 8000:8000 hany25/assignment10:latest
 </details>
 
 ---
-
-**Author:** Hany Youssef
-**Course:** IS601 – Module 10
-**Date:** July 26, 2025
