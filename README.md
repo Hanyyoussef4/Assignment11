@@ -92,5 +92,3 @@ docker run -p 8000:8000 hany25/assignment11:latest
   database & schema support, easing future API work.
 * Validators prevent *divide‑by‑zero* and enforce allowed operation types.
 * Fully automated pipeline keeps the test database schema in sync via Alembic.
-
-*The rest of this README (setup, environment variables, etc.) is unchanged from Assignment 10.*
