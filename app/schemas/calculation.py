@@ -11,7 +11,7 @@ class _CalcBase(BaseModel):
     type: Literal["add", "sub", "multiply", "divide"]
 
     # Pydantic v2 style validator
-    @field_validator("b")
+    @field_validator("b", mode="after")
     def no_zero_divisor(cls, v, info: FieldValidationInfo):
         """
         If the operation is 'divide', 'b' may not be zero.
