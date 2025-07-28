@@ -1,0 +1,111 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14                        # pin a stable tag
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fastapi_test_db            # ← matches your code & Alembic
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'                  # keep CI same as local
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fastapi_test_db
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install alembic                 # ← NEW
+          # playwright install                # (skip for Module 11)
+
+      - name: Run migrations                # ← NEW step
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fastapi_test_db
+        run: |
+          source venv/bin/activate
+          alembic upgrade head
+
+      - name: Run unit & integration tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fastapi_test_db
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          source venv/bin/activate
+          # 1) Unit + integration (skip e2e until Module 12)
+          pytest -q -k "not e2e" --cov=app --junitxml=test-results/junit.xml
+
+  security:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t app:test .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'app:test'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+  deploy:
+    needs: security
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: |
+            hany25/assignment11:latest           # ← update repo / tag
+            hany25/assignment11:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=registry,ref=hany25/assignment11:cache
+          cache-to: type=inline,mode=max
