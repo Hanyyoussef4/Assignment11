@@ -1,29 +1,30 @@
-# Assignment 11 – Calculation Model, Alembic Migrations & Extended CI/CD
+# Assignment 11 — Implement and Test a Calculation Mode
 
-![CI/CD Status](https://github.com/Hanyyoussef4/Assignment11/actions/workflows/ci.yml/badge.svg)
+[![CI / CD Pipeline](https://github.com/Hanyyoussef4/Assignment11/actions/workflows/test.yml/badge.svg)](https://github.com/Hanyyoussef4/Assignment11/actions/workflows/test.yml)
 
 > **What’s new in Module 11?**
 >
-> * Added **Calculation** SQLAlchemy model (Add, Subtract, Multiply, Divide)
-> * Alembic migrations folder & auto‑generated migration for `calculations` table
-> * Pydantic schemas **CalculationCreate / CalculationRead** with robust validation
-> * Extra unit tests + CI workflow now installs Alembic, runs migrations, and skips UI tests
-> * Image pushed to **`hany25/assignment11`** on Docker Hub
+> • **Calculation** SQLAlchemy model (`add | sub | mul | div`)
+> • Full Alembic migration folder & auto‑generated *add\_calculations\_table* revision
+> • Pydantic v2 schemas — `CalculationCreate` & `CalculationRead` (divide‑by‑zero guard)
+> • Extra unit / integration tests; CI now runs Alembic, skips Playwright e2e
+> • Docker image automatically published to **`hany25/assignment11`** after Trivy scan
 
-The earlier functionality from Assignment 10 (secure users, JWT auth, full testing,
-Dockerised FastAPI) remains intact.
+Everything from Assignment 10 (JWT auth, users, tests, Dockerised FastAPI) still works.
 
 ---
 
 ## 🔗 Quick Links
 
-* **GitHub Repo**: [https://github.com/Hanyyoussef4/Assignment11](https://github.com/Hanyyoussef4/Assignment11)
-* **Docker Hub**: [https://hub.docker.com/r/hany25/assignment11](https://hub.docker.com/r/hany25/assignment11)
-* **Reflection**: [Documentation/Reflection.md](Documentation/Reflection.md)
+| Resource                | URL                                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| **GitHub repo**         | [https://github.com/Hanyyoussef4/Assignment11](https://github.com/Hanyyoussef4/Assignment11) |
+| **Docker Hub**          | [https://hub.docker.com/r/hany25/assignment11](https://hub.docker.com/r/hany25/assignment11) |
+| **Reflection write‑up** | [`Documentation/Reflection.md`](Documentation/Reflection.md)                                 |
 
 ---
 
-## 🐳 Docker Image
+## 🐳 Pull & Run the Image
 
 ```bash
 docker pull hany25/assignment11:latest
@@ -32,64 +33,74 @@ docker run -p 8000:8000 hany25/assignment11:latest
 
 ---
 
-## 📂 Project Structure
+## 📂 Project Layout
 
-```
+```text
 .
 ├── app/
-│   ├── auth/                       # JWT & auth deps
 │   ├── models/
 │   │   ├── user.py
-│   │   └── calculation.py          # ← NEW
-│   ├── operations/
+│   │   └── calculation.py          ← NEW
 │   ├── schemas/
 │   │   ├── user.py
-│   │   └── calculation.py          # ← NEW
-│   ├── database.py
-│   └── config.py
-├── migrations/                     # ← NEW (Alembic)
+│   │   └── calculation.py          ← NEW
+│   └── operations/                 ← factory for math ops
+├── migrations/                     ← NEW (Alembic)
 │   ├── env.py
 │   └── versions/
-│       └── *_add_calculations_table.py
 ├── tests/
-│   ├── unit/
-│   │   └── test_calculation_schema.py   # ← NEW
+│   ├── unit/test_calculation_schema.py
 │   ├── integration/
-│   └── e2e/
+│   └── e2e/                        (Playwright, skipped in CI)
 ├── Documentation/
-│   ├── Docker Hub Deployment.png
-│   ├── GitHub Actions Workflow.png
+│   ├── Docker_Image.png
+│   ├── Workflow_Run.png
 │   └── Reflection.md
-├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
-├── .github/
-│   └── workflows/
-│       └── ci.yml                  # updated: alembic + skip e2e
-└── README.md
+└── .github/workflows/test.yml      ← CI/CD workflow (test → security → deploy)
 ```
 
 ---
 
-## 🚦 CI/CD Pipeline
+## 🚦 CI/CD Overview
 
-1. **test** – installs deps, runs Alembic `upgrade head`, then `pytest -k "not e2e"`
-2. **security** – builds a local image and scans with Trivy
-3. **deploy** – pushes `hany25/assignment11` (`latest` & `${{ sha }}`) to Docker Hub
+| Job          | Purpose                                                                                  |
+| ------------ | ---------------------------------------------------------------------------------------- |
+| **test**     | Spin‑up Postgres service → `alembic upgrade head` → run `pytest -k "not e2e"`            |
+| **security** | Build local image, scan with **Trivy** (fail on HIGH / CRITICAL)                         |
+| **deploy**   | Push multi‑arch image<br>`hany25/assignment11:{latest, ${{ github.sha }}}` to Docker Hub |
 
 <details>
-<summary>Workflow screenshot</summary>
+<summary>Latest successful run</summary>
 
-![GitHub Actions Workflow](Documentation/GitHub%20Actions%20Workflow.png)
+![Workflow Run](Documentation/Workflow_Run.png)
 
 </details>
 
 ---
 
-## ✨ Features
+## 📸 Evidence
 
-* **Calculation Endpoints** (to be exposed in Module 12) already have
-  database & schema support, easing future API work.
-* Validators prevent *divide‑by‑zero* and enforce allowed operation types.
-* Fully automated pipeline keeps the test database schema in sync via Alembic.
+| Screenshot                                      | Description                                       |
+| ----------------------------------------------- | ------------------------------------------------- |
+| ![Image](Documentation/Docker_Image.png)        | Images in Docker Hub |
+| ![Workflow Run](Documentation/Workflow_Run.png) | All three jobs green in GitHub Actions            |
 
+---
+
+## ✨ Highlights
+
+* **Model‑level validation** prevents division by zero long before database insert.
+* **Alembic** keeps local, test, and production databases in sync through the pipeline.
+* **Trivy** gate ensures only vulnerability‑free images reach Docker Hub.
+* Modular commit history (“feat: model”, “test: schema”, “ci: pipeline”) speeds code review.
+
+---
+
+## 📝 Reflection
+
+See [`Documentation/Reflection.md`](Documentation/Reflection.md) for a deeper dive into
+design decisions, roadblocks, and future improvements.
+
+---
